@@ -1,0 +1,78 @@
+{
+  "name": "electron-mcp-server",
+  "version": "1.0.0",
+  "description": "Model Context Protocol server that lets AI agents drive any Electron application via Chrome DevTools Protocol. Zero footprint on the target app: just launch it with --remote-debugging-port.",
+  "license": "MIT",
+  "author": "AgentsRoom",
+  "homepage": "https://github.com/agentsroom/electron-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agentsroom/electron-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/agentsroom/electron-mcp/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "electron",
+    "cdp",
+    "chrome-devtools-protocol",
+    "automation",
+    "testing",
+    "ai-agent",
+    "claude"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./extensions": {
+      "types": "./dist/extensions/index.d.ts",
+      "import": "./dist/extensions/index.js",
+      "require": "./dist/extensions/index.cjs"
+    }
+  },
+  "bin": {
+    "electron-mcp-server": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "ARCHITECTURE.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "chrome-remote-interface": "^0.33.3",
+    "pino": "^9.5.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/chrome-remote-interface": "^0.31.14",
+    "@types/node": "^22.10.0",
+    "electron": "^33.0.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

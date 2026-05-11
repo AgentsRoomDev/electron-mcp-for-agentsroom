@@ -1,0 +1,14 @@
+{
+  "name": "electron-mcp-example-minimal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tiny Electron app used by electron-mcp-server's e2e tests and as a quickstart example.",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "start:debug": "electron . --remote-debugging-port=9223"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0"
+  }
+}

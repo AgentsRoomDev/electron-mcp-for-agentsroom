@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>electron-mcp example</title>
+    <style>
+      :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+      body { margin: 0; padding: 32px; max-width: 720px; }
+      h1 { margin: 0 0 8px; }
+      p { color: #555; }
+      .row { display: flex; gap: 8px; margin: 16px 0; align-items: center; }
+      input, button {
+        padding: 8px 12px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: 1px solid #888;
+      }
+      button { background: #1f6feb; color: white; border: none; cursor: pointer; }
+      button:hover { background: #1858c4; }
+      .counter { font-variant-numeric: tabular-nums; font-size: 24px; font-weight: 700; }
+      .greeting { padding: 12px 16px; border-left: 3px solid #1f6feb; background: rgba(31,111,235,0.08); }
+      .hidden { display: none; }
+    </style>
+  </head>
+  <body>
+    <h1 data-testid="title">electron-mcp example</h1>
+    <p>Drive me with <code>npx electron-mcp-server --port 9223</code>.</p>
+
+    <div class="row">
+      <input
+        id="name"
+        data-testid="name-input"
+        type="text"
+        placeholder="Your name"
+        autocomplete="off"
+      />
+      <button data-testid="greet-button" id="greet">Greet</button>
+    </div>
+
+    <div
+      class="greeting hidden"
+      data-testid="greeting"
+      id="greeting"
+      role="status"
+    ></div>
+
+    <div class="row">
+      <button data-testid="counter-button" id="inc">Increment</button>
+      <span class="counter" data-testid="counter-value" id="counter">0</span>
+    </div>
+
+    <ul data-testid="todo-list" id="todos"></ul>
+    <div class="row">
+      <input data-testid="todo-input" id="todo-input" placeholder="Add a todo" />
+      <button data-testid="todo-add" id="todo-add">Add</button>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+      let count = 0;
+
+      $("greet").addEventListener("click", () => {
+        const name = $("name").value.trim() || "world";
+        const g = $("greeting");
+        g.textContent = `Hello, ${name}!`;
+        g.classList.remove("hidden");
+      });
+
+      $("inc").addEventListener("click", () => {
+        count++;
+        $("counter").textContent = String(count);
+      });
+
+      $("todo-add").addEventListener("click", () => {
+        const input = $("todo-input");
+        const text = input.value.trim();
+        if (!text) return;
+        const li = document.createElement("li");
+        li.textContent = text;
+        li.dataset.testid = "todo-item";
+        $("todos").appendChild(li);
+        input.value = "";
+      });
+
+      $("todo-input").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") $("todo-add").click();
+      });
+
+      // Surface what kind of console output the server should buffer.
+      console.log("[example] window ready");
+      console.warn("[example] sample warning");
+    </script>
+  </body>
+</html>
