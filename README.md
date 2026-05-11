@@ -20,7 +20,7 @@
 
 Each agent in AgentsRoom can be connected to **MCP servers** that extend its capabilities beyond the file system. This package is the MCP server that lets those agents take direct control of any running Electron application.
 
-[Download AgentsRoom](https://agentsroom.dev/download) — free, macOS, no subscription required.
+[Download AgentsRoom](https://agentsroom.dev/download)
 
 ---
 
