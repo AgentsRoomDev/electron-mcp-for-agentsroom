@@ -9,35 +9,32 @@
 </p>
 
 <p align="center">
-  <strong>Give your AI agents full control over any Electron app — zero changes to your existing code.</strong>
+  <strong>Give your AI agents full control over any Electron app. Zero changes to your existing code.</strong>
 </p>
 
 ---
 
-## What is AgentsRoom?
+## 🤖 What is AgentsRoom?
 
-[AgentsRoom](https://agentsroom.dev) is a macOS command center for running multiple Claude AI agents in parallel on your own projects. Think of it as a desktop IDE where every tab is an autonomous AI agent that can read, write, build, and test your codebase — all at the same time.
+[AgentsRoom](https://agentsroom.dev) is a macOS command center for running multiple Claude AI agents in parallel on your own projects. Think of it as a desktop IDE where every tab is an autonomous AI agent that can read, write, build, and test your codebase, all at the same time.
 
-Each agent in AgentsRoom can be connected to **MCP servers** that extend its capabilities. This package is the MCP server that lets those agents take direct control of any running Electron application.
+Each agent in AgentsRoom can be connected to **MCP servers** that extend its capabilities beyond the file system. This package is the MCP server that lets those agents take direct control of any running Electron application.
 
 [Download AgentsRoom](https://agentsroom.dev/download) — free, macOS, no subscription required.
 
 ---
 
-## What is MCP?
+## 🔌 What is MCP?
 
-**Model Context Protocol** (MCP) is an open standard introduced by Anthropic that defines how AI models communicate with external tools and environments. Instead of training a model to "know" every API, MCP lets you expose any capability — a database, a browser, a file system, a running app — as a structured set of tools the model can call.
+**Model Context Protocol** (MCP) is an open standard introduced by Anthropic that defines how AI models communicate with external tools and environments. Instead of training a model to "know" every API, MCP lets you expose any capability as a structured set of tools the model can call: a database, a browser, a file system, a running app.
 
-An MCP server is a small process that:
-1. declares a list of typed tools (name, description, input schema)
-2. receives tool-call requests from the AI
-3. executes the action and returns a structured result
+An MCP server is a small process that declares typed tools (name, description, input schema), receives call requests from the AI, executes the action, and returns a structured result.
 
-This package is an MCP server for Electron apps. The AI calls `click`, `type`, `screenshot`, `assert_visible` — and this server executes them against the real renderer via Chrome DevTools Protocol.
+This package is an MCP server for Electron apps. The AI calls `click`, `type`, `screenshot`, `assert_visible` and this server executes them against the real renderer via Chrome DevTools Protocol.
 
 ---
 
-## Why Electron MCP?
+## ⚡ Why Electron MCP?
 
 Modern AI agents are great at reasoning and writing code. The missing piece is **closing the feedback loop**: the agent writes a change, rebuilds the app, then needs to *see* whether it worked. Without direct access to the running UI, agents have to guess.
 
@@ -45,15 +42,15 @@ Electron MCP closes that loop:
 
 - **No wrapper code needed.** Your app just needs `--remote-debugging-port=N` at launch. That's it.
 - **Real interactions.** Click, type, scroll, navigate — the same events a user would fire, not simulated DOM mutations.
-- **Visual verification.** The agent can take a screenshot after every action, assert that the right element appeared, and read the renderer's console logs if something went wrong.
+- **Visual verification.** The agent takes a screenshot after every action, asserts that the right element appeared, and reads the renderer's console logs if something went wrong.
 - **Multi-window support.** Electron apps often open several BrowserWindows. The agent can list all targets and switch between them freely.
 
 ### Why it's especially powerful with AgentsRoom
 
 AgentsRoom already manages agent lifecycles, parallel sessions, and project context. Adding Electron MCP means your agents can:
 
-- **Write a feature and immediately test it** in the running app — in the same turn, without leaving AgentsRoom.
-- **Run visual regression checks** by screenshotting before/after a change.
+- **Write a feature and immediately test it** in the running app, in the same turn, without leaving AgentsRoom.
+- **Run visual regression checks** by screenshotting before and after a change.
 - **Debug renderer errors** by reading console logs directly, without opening DevTools manually.
 - **Automate end-to-end workflows** across multiple windows of the same app.
 
@@ -61,62 +58,46 @@ The result is a tight loop between code generation and UI validation that would 
 
 ---
 
-## Install in your Electron app
+## 🚀 Get started in 30 seconds
 
-**Step 1 — Launch your app with the debug port**
+**Step 1.** Launch your Electron app with the debug port:
 
 ```bash
 electron . --remote-debugging-port=9223
 ```
 
-No code change required. Electron exposes a CDP endpoint on that port automatically.
-
-**Step 2 — Add the MCP server to your AgentsRoom project**
-
-In your project's `.mcp.json` (or via the AgentsRoom MCP panel):
-
-```jsonc
-{
-  "mcpServers": {
-    "electron": {
-      "command": "npx",
-      "args": ["electron-mcp-server", "--port", "9223"]
-    }
-  }
-}
-```
-
-**Step 3 — Ask your agent to drive the app**
+**Step 2.** Paste this prompt into your AgentsRoom agent:
 
 ```
-Open the Settings panel, toggle Dark Mode on, screenshot the result,
-and tell me if the theme actually changed.
+Add electron-mcp-server to my project MCP config.
+My Electron app runs on debug port 9223.
+Once it's set up, take a screenshot to confirm the connection works.
 ```
 
-The agent will compose `navigate`, `click`, `wait_for_selector`, `screenshot`, and `assert_visible` to carry out the request and report back with visual evidence.
+That's it. The agent will add the server to your `.mcp.json`, connect to the running app, and confirm it's working with a live screenshot.
 
 ---
 
-## Tool reference
+## 👁️ Tool reference
 
 ### Observe
 
 | Tool | What it does |
 |---|---|
 | `screenshot` | PNG/JPEG of the viewport, a specific element, or full page |
-| `dom_query` | Query the DOM with CSS — returns attrs, text, rect, visibility |
+| `dom_query` | Query the DOM with CSS: returns attrs, text, rect, visibility |
 | `console_logs` | Recent renderer console output, filterable by level |
 | `get_state` | Viewport size, user agent, document ready state |
 | `get_route` | Current `location` (href, pathname, search, hash) |
 | `list_targets` | All CDP targets exposed by the app (windows, workers) |
 | `switch_target` | Re-attach to a different BrowserWindow |
 
-### Interact
+### 🖱️ Interact
 
 | Tool | What it does |
 |---|---|
-| `click` | Click any element — supports multi-click and modifier keys |
-| `type` | Focus + type into an input or contenteditable |
+| `click` | Click any element, supports multi-click and modifier keys |
+| `type` | Focus and type into an input or contenteditable |
 | `press_key` | Dispatch a key combo (`Meta+K`, `Control+Shift+P`, ...) |
 | `navigate` | Hard-navigate the renderer to a URL |
 | `scroll` | Scroll an element into view or scroll by delta |
@@ -189,7 +170,7 @@ const handle = await runServer({ port: 9223, extensions: [myExt] });
 
 ## How it works
 
-The server connects to your app's CDP endpoint and exposes every action as a typed MCP tool. The AI never touches the Electron process directly — it only calls tools, and the server translates them into CDP commands against the running renderer.
+The server connects to your app's CDP endpoint and exposes every action as a typed MCP tool. The AI never touches the Electron process directly: it only calls tools, and the server translates them into CDP commands against the running renderer.
 
 ```
 AI agent
@@ -215,7 +196,6 @@ No Playwright runtime, no bundled browser, no modifications to your app. Just a 
 
 - **AgentsRoom**: [agentsroom.dev](https://agentsroom.dev)
 - **Download AgentsRoom**: [agentsroom.dev/download](https://agentsroom.dev/download)
-- **npm**: [electron-mcp-server](https://www.npmjs.com/package/electron-mcp-server)
 - **Issues**: [GitHub Issues](https://github.com/AgentsRoomDev/electron-mcp-for-agentsroom/issues)
 
 ---
