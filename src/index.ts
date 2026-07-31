@@ -19,5 +19,10 @@ export type { Tool, AnyTool, ToolContext } from "./tools/types.js";
 export { ExtensionRegistry, defineExtension } from "./extensions/registry.js";
 export type { Extension } from "./extensions/registry.js";
 
+// Re-export zod so extension authors can build tool input schemas against the
+// exact zod version this package uses, without adding their own dependency.
+// The README's programmatic-usage example imports `z` from here.
+export { z } from "zod";
+
 export { ElectronMcpError, isElectronMcpError } from "./utils/errors.js";
 export type { ElectronMcpErrorCode } from "./utils/errors.js";
