@@ -1,6 +1,19 @@
 #!/usr/bin/env node
+import { readFileSync } from "node:fs";
 import { runServer } from "./server.js";
 import { logger } from "./utils/logger.js";
+
+/** Version string reported by `--version`, read from the shipped package.json. */
+const VERSION: string = (() => {
+  try {
+    const pkg = JSON.parse(
+      readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+    ) as { version?: string };
+    return typeof pkg.version === "string" ? pkg.version : "0.0.0";
+  } catch {
+    return "0.0.0";
+  }
+})();
 
 interface ParsedArgs {
   host?: string;
@@ -9,7 +22,7 @@ interface ParsedArgs {
   waitForTargetMs?: number;
   lazy?: boolean;
   name?: string;
-  version?: string;
+  version?: boolean;
   help?: boolean;
   eventsDir?: string;
   eventLog?: boolean;
@@ -59,8 +72,9 @@ function parseArgs(argv: string[]): ParsedArgs {
       case "--name":
         out.name = next();
         break;
+      case "-v":
       case "--version":
-        out.version = next();
+        out.version = true;
         break;
       default:
         if (a.startsWith("--")) {
@@ -86,6 +100,7 @@ OPTIONS
   --lazy                    Defer the CDP connection until the first tool call
   --name <s>                Server name advertised over MCP (default electron-mcp-server)
   -h, --help                Show this help
+  -v, --version             Print the version and exit
 
 ENVIRONMENT
   ELECTRON_MCP_LOG_LEVEL    debug | info | warn | error (default info)
@@ -107,6 +122,10 @@ async function main(): Promise<void> {
     process.stdout.write(HELP);
     process.exit(0);
   }
+  if (args.version) {
+    process.stdout.write(`${VERSION}\n`);
+    process.exit(0);
+  }
   if (!args.port || Number.isNaN(args.port)) {
     process.stderr.write(HELP);
     process.stderr.write("\nError: --port is required.\n");
@@ -120,7 +139,7 @@ async function main(): Promise<void> {
     waitForTargetMs: args.waitForTargetMs,
     lazy: args.lazy,
     name: args.name,
-    version: args.version,
+    version: VERSION,
     eventsDir: args.eventsDir,
     eventLog: args.eventLog,
     eventSourceName: args.eventSourceName,
