@@ -1,6 +1,6 @@
 {
   "name": "electron-mcp-server",
-  "version": "1.144.0",
+  "version": "1.145.0",
   "description": "Model Context Protocol server that lets AI agents drive any Electron application via Chrome DevTools Protocol. Zero footprint on the target app: just launch it with --remote-debugging-port.",
   "license": "MIT",
   "author": "AgentsRoom",
