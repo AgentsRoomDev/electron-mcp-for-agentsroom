@@ -9,6 +9,7 @@ import { ExtensionRegistry } from "./extensions/registry.js";
 import { isElectronMcpError } from "./utils/errors.js";
 import { child, logger } from "./utils/logger.js";
 import { initEventLog, appendEvent, newEventId, saveScreenshot, getSourceName, readCurrentAgent } from "./utils/event-log.js";
+import { loggedInput, loggedOutput } from "./utils/redact.js";
 
 const log = child({ module: "server" });
 
@@ -137,7 +138,7 @@ function registerTool(
 
 function logToolEvent(args: { eventId: string; start: number; tool: string; input: unknown; result: unknown }): void {
   let screenshotPath: string | undefined;
-  let output: unknown = args.result;
+  let output: unknown = loggedOutput(args.tool, args.result);
   if (
     args.tool === "screenshot" &&
     typeof args.result === "object" &&
@@ -157,7 +158,7 @@ function logToolEvent(args: { eventId: string; start: number; tool: string; inpu
     agentId: focus.agentId,
     parentAgentId: focus.parentAgentId,
     tool: args.tool,
-    input: args.input,
+    input: loggedInput(args.tool, args.input),
     ok: true,
     durationMs: Date.now() - args.start,
     output,
@@ -175,7 +176,7 @@ function logToolError(args: { eventId: string; start: number; tool: string; inpu
     agentId: focus.agentId,
     parentAgentId: focus.parentAgentId,
     tool: args.tool,
-    input: args.input,
+    input: loggedInput(args.tool, args.input),
     ok: false,
     durationMs: Date.now() - args.start,
     error: { code: e.code, message: e.message },

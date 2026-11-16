@@ -55,6 +55,27 @@ function parseCombo(combo: string): { modifiers: number; key: string } {
   return { modifiers, key };
 }
 
+/** With one of these held the key is a shortcut: it inserts nothing. */
+const SHORTCUT_BITS = MODIFIER_BITS.Alt! | MODIFIER_BITS.Control! | MODIFIER_BITS.Meta!;
+/** What the event log shows in place of keys that may be a typed character. */
+export const TYPED_KEY_LOGGED = "[typed character]";
+
+/**
+ * What the event log (a plain JSONL file) keeps of `keys`: a named key or a
+ * one-character shortcut as is, anything else masked, so a password typed key
+ * by key never reads back from it (AgentsRoom #3191).
+ */
+export function pressKeyLogged(keys: unknown): unknown {
+  if (typeof keys !== "string") return TYPED_KEY_LOGGED;
+  try {
+    const { modifiers, key } = parseCombo(keys);
+    if (key in KEY_INFO) return keys;
+    return (modifiers & SHORTCUT_BITS) !== 0 && Array.from(key).length === 1 ? keys : TYPED_KEY_LOGGED;
+  } catch {
+    return TYPED_KEY_LOGGED;
+  }
+}
+
 function describeKey(key: string): { code: string; vk: number; text?: string; key: string } {
   const known = KEY_INFO[key];
   if (known) return { ...known, key };
